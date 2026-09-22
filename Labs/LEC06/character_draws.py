@@ -22,12 +22,15 @@ def move_triangle():
 
 while(1):
     clear_canvas()
-    update_canvas()
+
+    character.draw(centerX,centerY)
+    grass.draw(centerX, centerY-60)
 
     move_circle()
     move_rectangle()
     move_triangle()
 
+    update_canvas()
     delay(0.01)
     pass
 
