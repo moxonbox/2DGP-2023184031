@@ -6,6 +6,8 @@ centerX = canvasW / 2
 centerY = canvasH / 2
 open_canvas(canvasW, canvasH)
 
+boy = load_image('character.png')
+
 
 def move_circle():
     print('circle')
@@ -18,11 +20,14 @@ def move_triangle():
 
 
 while(1):
+    clear_canvas()
+    update_canvas()
 
     move_circle()
     move_rectangle()
     move_triangle()
 
+    delay(0.01)
     pass
 
 
