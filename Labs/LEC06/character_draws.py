@@ -6,7 +6,8 @@ centerX = canvasW / 2
 centerY = canvasH / 2
 open_canvas(canvasW, canvasH)
 
-boy = load_image('character.png')
+character = load_image('character.png')
+grass = load_image('grass.png')
 
 
 def move_circle():
