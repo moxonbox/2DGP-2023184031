@@ -11,7 +11,9 @@ grass = load_image('grass.png')
 
 
 def move_circle():
-    print('circle')
+    theta = math.radians(degree)
+    x = centerX + radius * math.cos(theta)
+    y = centerY + radius * math.sin(theta)
 
 def move_rectangle():
     print('rectangle')
@@ -23,8 +25,9 @@ def move_triangle():
 while(1):
     clear_canvas()
 
-    character.draw(centerX,centerY)
+    character.draw(centerX, centerY)
     grass.draw(centerX, centerY-60)
+    radius = 200
 
     move_circle()
     move_rectangle()
