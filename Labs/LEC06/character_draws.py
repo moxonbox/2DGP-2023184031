@@ -1,5 +1,11 @@
 from pico2d import *
 
+canvasW = 800
+canvasH = 600
+centerX = canvasW / 2
+centerY = canvasH / 2
+open_canvas(canvasW, canvasH)
+
 
 def move_circle():
     print('circle')
@@ -18,3 +24,7 @@ while(1):
     move_triangle()
 
     pass
+
+
+delay(10)
+close_canvas()
