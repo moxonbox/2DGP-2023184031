@@ -10,30 +10,32 @@ character = load_image('character.png')
 grass = load_image('grass.png')
 
 
+def draw_boy(x, y):
+    clear_canvas()
+    grass.draw(centerX, centerY-60)
+    character.draw(x, y)
+    update_canvas()
+    delay(0.01)
+
 def move_circle():
     for degree in range(360):
         radius = 200
         theta = math.radians(degree)
         x = centerX + radius * math.cos(theta)
         y = centerY + radius * math.sin(theta)
-
-        clear_canvas()
-        grass.draw(centerX, centerY-60)
-        character.draw(x, y)
-        update_canvas()
-        delay(0.01)
+        draw_boy(x, y)
     pass
 
-def move_top()
+def move_top():
     pass
 
-def move_right()
+def move_right():
     pass
 
-def move_bottom()
+def move_bottom():
     pass
 
-def move_left()
+def move_left():
     pass
 
 def move_rectangle():
