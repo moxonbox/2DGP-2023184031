@@ -54,7 +54,7 @@ def move_triangle():
 
 # ============================= 실행 루프
 
-move_right()
+move_bottom()
 
 while(1):
 
