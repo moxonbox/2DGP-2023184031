@@ -27,7 +27,8 @@ def move_circle():
     pass
 
 def move_top():
-    pass
+    for x in range(50, 751, 5):
+        draw_boy(x, 550)
 
 def move_right():
     pass
