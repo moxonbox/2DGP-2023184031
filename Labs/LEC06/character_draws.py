@@ -9,6 +9,7 @@ open_canvas(canvasW, canvasH)
 character = load_image('character.png')
 grass = load_image('grass.png')
 
+# ============================= 함수 정의
 
 def draw_boy(x, y):
     clear_canvas()
@@ -51,6 +52,9 @@ def move_rectangle():
 def move_triangle():
     print('triangle')
 
+# ============================= 실행 루프
+
+move_top()
 
 while(1):
 
@@ -59,7 +63,6 @@ while(1):
     move_triangle()
     
     pass
-
 
 delay(10)
 close_canvas()
