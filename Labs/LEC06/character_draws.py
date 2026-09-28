@@ -58,7 +58,9 @@ def move_along_line():
     print('test')
 
 def move_triangle():
-    print('triangle')
+    A = (100, 100)
+    B = (700, 100)
+    C = (400, 500)
 
 
 # ============================= 실행 루프
@@ -68,7 +70,6 @@ while(1):
 
     move_circle()
     move_rectangle()
-    move_along_line()
     move_triangle()
     
     pass
