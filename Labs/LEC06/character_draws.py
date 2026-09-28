@@ -59,6 +59,7 @@ def move_along_line(x0, x1, y0, y1, n = 58):
         t = step / n
         x = x0 + (x1 - x0) * t
         y = y0 + (y1 - y0) * t
+        draw_boy(x, y)
 
 
 def move_triangle():
