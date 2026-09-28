@@ -9,7 +9,9 @@ open_canvas(canvasW, canvasH)
 character = load_image('character.png')
 grass = load_image('grass.png')
 
+
 # ============================= 함수 정의
+
 
 def draw_boy(x, y):
     clear_canvas()
@@ -17,6 +19,7 @@ def draw_boy(x, y):
     character.draw(x, y)
     update_canvas()
     delay(0.01)
+
 
 def move_circle():
     for degree in range(360):
@@ -26,6 +29,7 @@ def move_circle():
         y = centerY + radius * math.sin(theta)
         draw_boy(x, y)
     pass
+
 
 def move_top():
     for x in range(50, 751, 5):
@@ -49,15 +53,22 @@ def move_rectangle():
     move_bottom()
     move_left()
 
+
+def move_along_line():
+    print('test')
+
 def move_triangle():
     print('triangle')
 
+
 # ============================= 실행 루프
+
 
 while(1):
 
     move_circle()
     move_rectangle()
+    move_along_line()
     move_triangle()
     
     pass
