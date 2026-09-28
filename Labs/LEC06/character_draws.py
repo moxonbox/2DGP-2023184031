@@ -56,7 +56,7 @@ def move_rectangle():
 
 def move_along_line(x0, x1, y1, y2, n = 58):
     for step in range (n+1):
-        pass
+        t = step / n
 
 
 def move_triangle():
