@@ -54,9 +54,11 @@ def move_rectangle():
     move_left()
 
 
-def move_along_line(x0, x1, y1, y2, n = 58):
+def move_along_line(x0, x1, y0, y1, n = 58):
     for step in range (n+1):
         t = step / n
+        x = x0 + (x1 - x0) * t
+        y = y0 + (y1 - y0) * t
 
 
 def move_triangle():
