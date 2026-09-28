@@ -63,20 +63,19 @@ def move_triangle():
     C = (400, 500)
 
     while(1):
-        # A->B
-        # B->C
-        # C->A
+        move_along_line(A[0], A[1], B[0], B[1])
+        move_along_line(B[0], B[1], C[0], C[1])
+        move_along_line(C[0], C[1], A[0], A[1])
+        pass
 
 
 # ============================= 실행 루프
 
 
 while(1):
-
     move_circle()
     move_rectangle()
     move_triangle()
-    
     pass
 
 delay(10)
