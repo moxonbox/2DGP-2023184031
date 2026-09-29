@@ -28,7 +28,6 @@ def move_circle():
         x = centerX + radius * math.cos(theta)
         y = centerY + radius * math.sin(theta)
         draw_boy(x, y)
-    pass
 
 
 def move_top():
