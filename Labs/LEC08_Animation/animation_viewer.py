@@ -63,6 +63,7 @@ def handle_events():
 def main():
     pico2d.open_canvas(800, 600)
     try:
+        pico2d.SDL_SetWindowResizable(pico2d.window, pico2d.SDL_TRUE)
         sheet = load_sprite()
         started = perf_counter()
         while handle_events():
