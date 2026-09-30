@@ -9,6 +9,7 @@ FRAME_SIZE = 128
 ANIMATIONS = (
     ("Walk", 1, 8),
     ("Run", 2, 8),
+    ("Jump", 3, 12),
 )
 
 
