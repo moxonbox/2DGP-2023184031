@@ -80,6 +80,9 @@ def main():
         while handle_events():
             width, height = get_viewport()
             action, frame, paused = animation_at(perf_counter() - started)
+            state = "Paused (1 s)" if paused else "Playing"
+            title = f"Animation Viewer - {ANIMATIONS[action][0]} - {state}"
+            pico2d.SDL_SetWindowTitle(pico2d.window, title.encode("utf-8"))
             pico2d.clear_canvas()
             draw_frame(sheet, action, frame, width, height)
             pico2d.update_canvas()
