@@ -6,6 +6,7 @@ from pico2d import pico2d
 
 FRAME_SIZE = 128
 FRAMES_PER_SECOND = 10
+REPETITIONS = 5
 # (name, row from the top, frame count)
 ANIMATIONS = (
     ("Walk", 1, 8),
@@ -29,7 +30,9 @@ def frame_rectangle(action, frame, sheet_height):
 def animation_at(elapsed):
     """Return the action, frame and pause state at an elapsed time."""
     frame_count = ANIMATIONS[0][2]
-    return 0, int(elapsed * FRAMES_PER_SECOND) % frame_count, False
+    play_seconds = frame_count * REPETITIONS / FRAMES_PER_SECOND
+    frame = min(int(elapsed * FRAMES_PER_SECOND), frame_count * REPETITIONS - 1)
+    return 0, frame % frame_count, elapsed >= play_seconds
 
 
 def draw_frame(sheet, action, frame, width, height):
