@@ -25,6 +25,11 @@ def frame_rectangle(action, frame, sheet_height):
             FRAME_SIZE, FRAME_SIZE)
 
 
+def draw_frame(sheet, action, frame, width, height):
+    sheet.clip_draw(*frame_rectangle(action, frame, sheet.h),
+                    width / 2, height / 2)
+
+
 def main():
     pico2d.open_canvas(800, 600)
     pico2d.close_canvas()
