@@ -6,12 +6,13 @@ grass = load_image('grass.png')
 boy = load_image('animation_sheet.png')
 
 
-def animation(frame):
-    for x in range(750, 5, -5):
+def animation(sel):
+    frame = 0
+    for x in range(5, 750, 5):
         clear_canvas()
         grass.draw(400, 30)
         boy.clip_composite_draw(
-            frame * 100, 0, # L, bottom
+            frame * 100, sel, # L, bottom
             100, 100,       # W, H
             math.pi/8, 'h',         # Rotation, Flip
             x, 90,          # destination X, Y
@@ -23,11 +24,11 @@ def animation(frame):
         delay(0.05)
 
 
-frame = 0
+
 
 while(1):
-    frame += 1
-    animation(frame)
+    sel += 1
+    animation(sel)
 
 
 
