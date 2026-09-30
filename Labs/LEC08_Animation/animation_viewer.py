@@ -34,6 +34,10 @@ def draw_frame(sheet, action, frame, width, height):
 
 def main():
     pico2d.open_canvas(800, 600)
+    sheet = load_sprite()
+    pico2d.clear_canvas()
+    draw_frame(sheet, 0, 0, 800, 600)
+    pico2d.update_canvas()
     pico2d.close_canvas()
 
 
