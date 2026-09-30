@@ -62,16 +62,18 @@ def handle_events():
 
 def main():
     pico2d.open_canvas(800, 600)
-    sheet = load_sprite()
-    started = perf_counter()
-    while handle_events():
-        action, frame, paused = animation_at(perf_counter() - started)
-        pico2d.clear_canvas()
-        draw_frame(sheet, action, frame, 800, 600)
-        pico2d.update_canvas()
-        # Keep processing input during the one-second animation pause.
-        pico2d.delay(0.01)
-    pico2d.close_canvas()
+    try:
+        sheet = load_sprite()
+        started = perf_counter()
+        while handle_events():
+            action, frame, paused = animation_at(perf_counter() - started)
+            pico2d.clear_canvas()
+            draw_frame(sheet, action, frame, 800, 600)
+            pico2d.update_canvas()
+            # Keep processing input during the one-second animation pause.
+            pico2d.delay(0.01)
+    finally:
+        pico2d.close_canvas()
 
 
 if __name__ == "__main__":
