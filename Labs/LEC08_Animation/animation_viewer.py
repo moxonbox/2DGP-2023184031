@@ -1,6 +1,12 @@
 """LEC 08: pico2d sprite animation viewer."""
 
+from pathlib import Path
+
 from pico2d import pico2d
+
+
+def load_sprite():
+    return pico2d.load_image(str(Path(__file__).with_name("SamuraiSheet.png")))
 
 
 def main():
