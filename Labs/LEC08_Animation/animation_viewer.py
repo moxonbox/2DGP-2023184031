@@ -50,6 +50,13 @@ def draw_frame(sheet, action, frame, width, height):
                     width / 2, height / 2, size, size)
 
 
+def handle_events():
+    for event in pico2d.get_events():
+        if event.type == pico2d.SDL_QUIT:
+            return False
+    return True
+
+
 def main():
     pico2d.open_canvas(800, 600)
     sheet = load_sprite()
