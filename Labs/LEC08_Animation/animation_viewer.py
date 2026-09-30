@@ -5,6 +5,7 @@ from pathlib import Path
 from pico2d import pico2d
 
 FRAME_SIZE = 128
+FRAMES_PER_SECOND = 10
 # (name, row from the top, frame count)
 ANIMATIONS = (
     ("Walk", 1, 8),
@@ -23,6 +24,12 @@ def frame_rectangle(action, frame, sheet_height):
     row = ANIMATIONS[action][1]
     return (frame * FRAME_SIZE, sheet_height - (row + 1) * FRAME_SIZE,
             FRAME_SIZE, FRAME_SIZE)
+
+
+def animation_at(elapsed):
+    """Return the action, frame and pause state at an elapsed time."""
+    frame_count = ANIMATIONS[0][2]
+    return 0, int(elapsed * FRAMES_PER_SECOND) % frame_count, False
 
 
 def draw_frame(sheet, action, frame, width, height):
