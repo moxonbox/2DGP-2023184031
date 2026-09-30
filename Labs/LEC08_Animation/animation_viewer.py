@@ -21,6 +21,10 @@ def grid_frames(row, count):
 # (name, image filename, ((left, top, width, height), ...))
 # Each action owns its frames; their sizes and counts can differ.
 ANIMATIONS = (
+    ("GPT 로봇 대기", "gpt_robot_sheet.png", (
+        (61, 10, 135, 166), (246, 22, 133, 155),
+        (426, 22, 128, 155), (619, 14, 133, 163),
+    )),
     ("걷기", "SamuraiSheet.png", grid_frames(1, 8)),
     ("뛰기", "SamuraiSheet.png", grid_frames(2, 8)),
     ("점프", "SamuraiSheet.png", grid_frames(3, 12)),
