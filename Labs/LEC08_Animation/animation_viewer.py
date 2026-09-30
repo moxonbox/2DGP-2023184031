@@ -26,8 +26,10 @@ def frame_rectangle(action, frame, sheet_height):
 
 
 def draw_frame(sheet, action, frame, width, height):
+    # Fit the square sprite frame inside half the viewport without stretching.
+    size = min(width, height) / 2
     sheet.clip_draw(*frame_rectangle(action, frame, sheet.h),
-                    width / 2, height / 2)
+                    width / 2, height / 2, size, size)
 
 
 def main():
