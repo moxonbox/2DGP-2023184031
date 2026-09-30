@@ -8,6 +8,7 @@ FRAME_SIZE = 128
 # (name, row from the top, frame count)
 ANIMATIONS = (
     ("Walk", 1, 8),
+    ("Run", 2, 8),
 )
 
 
