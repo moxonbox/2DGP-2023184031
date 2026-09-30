@@ -1,5 +1,6 @@
 """LEC 08: pico2d sprite animation viewer."""
 
+from ctypes import byref, c_int
 from pathlib import Path
 from time import perf_counter
 
@@ -60,6 +61,16 @@ def handle_events():
     return True
 
 
+def get_viewport():
+    # pico2d.get_events() discards SDL window resize events, so read the size.
+    width, height = c_int(), c_int()
+    pico2d.SDL_GetWindowSize(pico2d.window, byref(width), byref(height))
+    width, height = max(1, width.value), max(1, height.value)
+    if (width, height) != (pico2d.get_canvas_width(), pico2d.get_canvas_height()):
+        pico2d.resize_canvas(width, height)
+    return width, height
+
+
 def main():
     pico2d.open_canvas(800, 600)
     try:
@@ -67,9 +78,10 @@ def main():
         sheet = load_sprite()
         started = perf_counter()
         while handle_events():
+            width, height = get_viewport()
             action, frame, paused = animation_at(perf_counter() - started)
             pico2d.clear_canvas()
-            draw_frame(sheet, action, frame, 800, 600)
+            draw_frame(sheet, action, frame, width, height)
             pico2d.update_canvas()
             # Keep processing input during the one-second animation pause.
             pico2d.delay(0.01)
