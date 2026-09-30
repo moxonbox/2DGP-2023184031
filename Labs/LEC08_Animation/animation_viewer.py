@@ -10,6 +10,7 @@ ANIMATIONS = (
     ("Walk", 1, 8),
     ("Run", 2, 8),
     ("Jump", 3, 12),
+    ("Attack", 4, 6),
 )
 
 
