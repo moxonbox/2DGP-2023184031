@@ -55,17 +55,18 @@ def check_renderer():
         pico2d.SDL_HideWindow(pico2d.window)
         pico2d.SDL_SetWindowResizable(pico2d.window, pico2d.SDL_TRUE)
         assert pico2d.SDL_GetWindowFlags(pico2d.window) & pico2d.SDL_WINDOW_RESIZABLE
-        sheet = viewer.load_sprite()
+        sheets = viewer.load_sprites()
+        sheet = sheets["SamuraiSheet.png"]
         assert (sheet.w, sheet.h) == (1536, 1280)
         for width, height in ((800, 600), (1200, 400), (400, 1000)):
             pico2d.SDL_SetWindowSize(pico2d.window, width, height)
             pico2d.get_events()
             assert viewer.get_viewport() == (width, height)
             assert (pico2d.get_canvas_width(), pico2d.get_canvas_height()) == (width, height)
-            for action, (_, _, count) in enumerate(viewer.ANIMATIONS):
-                for frame in range(count):
+            for action, (_, filename, frames) in enumerate(viewer.ANIMATIONS):
+                for frame in range(len(frames)):
                     pico2d.clear_canvas()
-                    viewer.draw_frame(sheet, action, frame, width, height)
+                    viewer.draw_frame(sheets[filename], action, frame, width, height)
                     pico2d.update_canvas()
         event = pico2d.SDL_Event()
         event.type = pico2d.SDL_QUIT

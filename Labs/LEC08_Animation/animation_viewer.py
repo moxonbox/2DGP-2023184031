@@ -10,34 +10,43 @@ FRAME_SIZE = 128
 FRAMES_PER_SECOND = 10
 REPETITIONS = 5
 PAUSE_SECONDS = 1.0
-# (name, row from the top, frame count)
+
+
+def grid_frames(row, count):
+    """Return top-left rectangles for a row of the regular samurai sheet."""
+    return tuple((column * FRAME_SIZE, row * FRAME_SIZE, FRAME_SIZE, FRAME_SIZE)
+                 for column in range(count))
+
+
+# (name, image filename, ((left, top, width, height), ...))
+# Each action owns its frames; their sizes and counts can differ.
 ANIMATIONS = (
-    ("Walk", 1, 8),
-    ("Run", 2, 8),
-    ("Jump", 3, 12),
-    ("Attack", 4, 6),
+    ("걷기", "SamuraiSheet.png", grid_frames(1, 8)),
+    ("뛰기", "SamuraiSheet.png", grid_frames(2, 8)),
+    ("점프", "SamuraiSheet.png", grid_frames(3, 12)),
+    ("공격", "SamuraiSheet.png", grid_frames(4, 6)),
 )
 
 
-def load_sprite():
-    return pico2d.load_image(str(Path(__file__).with_name("SamuraiSheet.png")))
+def load_sprites():
+    return {filename: pico2d.load_image(str(Path(__file__).with_name(filename)))
+            for filename in sorted({filename for _, filename, _ in ANIMATIONS})}
 
 
 def frame_rectangle(action, frame, sheet_height):
-    """Convert a top-down sheet row to pico2d's bottom-left coordinates."""
-    row = ANIMATIONS[action][1]
-    return (frame * FRAME_SIZE, sheet_height - (row + 1) * FRAME_SIZE,
-            FRAME_SIZE, FRAME_SIZE)
+    """Convert a frame's top-left rectangle to pico2d's bottom-left coordinates."""
+    left, top, width, height = ANIMATIONS[action][2][frame]
+    return left, sheet_height - top - height, width, height
 
 
 def animation_at(elapsed):
     """Return the action, frame and pause state at an elapsed time."""
-    durations = tuple(count * REPETITIONS / FRAMES_PER_SECOND + PAUSE_SECONDS
-                      for _, _, count in ANIMATIONS)
+    durations = tuple(len(frames) * REPETITIONS / FRAMES_PER_SECOND + PAUSE_SECONDS
+                      for _, _, frames in ANIMATIONS)
     elapsed %= sum(durations)
     for action, duration in enumerate(durations):
         if elapsed < duration:
-            frame_count = ANIMATIONS[action][2]
+            frame_count = len(ANIMATIONS[action][2])
             play_seconds = duration - PAUSE_SECONDS
             frame = min(int(elapsed * FRAMES_PER_SECOND),
                         frame_count * REPETITIONS - 1)
@@ -46,10 +55,13 @@ def animation_at(elapsed):
 
 
 def draw_frame(sheet, action, frame, width, height):
-    # Fit the square sprite frame inside half the viewport without stretching.
-    size = min(width, height) / 2
-    sheet.clip_draw(*frame_rectangle(action, frame, sheet.h),
-                    width / 2, height / 2, size, size)
+    frames = ANIMATIONS[action][2]
+    # Share one scale across an action so different frame sizes do not pulsate.
+    scale = min(width / max(rect[2] for rect in frames),
+                height / max(rect[3] for rect in frames)) / 2
+    rectangle = frame_rectangle(action, frame, sheet.h)
+    sheet.clip_draw(*rectangle, width / 2, height / 2,
+                    rectangle[2] * scale, rectangle[3] * scale)
 
 
 def handle_events():
@@ -75,16 +87,16 @@ def main():
     pico2d.open_canvas(800, 600)
     try:
         pico2d.SDL_SetWindowResizable(pico2d.window, pico2d.SDL_TRUE)
-        sheet = load_sprite()
+        sheets = load_sprites()
         started = perf_counter()
         while handle_events():
             width, height = get_viewport()
             action, frame, paused = animation_at(perf_counter() - started)
-            state = "Paused (1 s)" if paused else "Playing"
-            title = f"Animation Viewer - {ANIMATIONS[action][0]} - {state}"
+            state = "정지 (1초)" if paused else "재생 중"
+            title = f"애니메이션 뷰어 - {ANIMATIONS[action][0]} - {state}"
             pico2d.SDL_SetWindowTitle(pico2d.window, title.encode("utf-8"))
             pico2d.clear_canvas()
-            draw_frame(sheet, action, frame, width, height)
+            draw_frame(sheets[ANIMATIONS[action][1]], action, frame, width, height)
             pico2d.update_canvas()
             # Keep processing input during the one-second animation pause.
             pico2d.delay(0.01)
