@@ -19,7 +19,7 @@ def png_size(filename):
 
 
 def check_animation():
-    generated = viewer.ANIMATIONS[:6]
+    generated = viewer.ANIMATIONS
     assert [name for name, _, _ in generated] == [
         "GPT 로봇 대기", "GPT 로봇 걷기", "GPT 로봇 뛰기",
         "GPT 로봇 점프", "GPT 로봇 공격", "GPT 로봇 승리",
@@ -28,8 +28,8 @@ def check_animation():
     assert all(filename == "gpt_robot_sheet.png" for _, filename, _ in generated)
     assert png_size("gpt_robot_sheet.png") == (1536, 1024)
     assert len({rect[2:] for _, _, frames in generated for rect in frames}) > 1
-    assert viewer.animation_at(20.5) == (6, 0, False)
-    assert viewer.animation_at(58) == (0, 0, False)
+    assert viewer.animation_at(20.499) == (5, 2, True)
+    assert viewer.animation_at(20.5) == (0, 0, False)
     # Check every frame of five repetitions, then both edges of each pause.
     start = 0
     assert len({len(frames) for _, _, frames in viewer.ANIMATIONS}) > 1
@@ -57,8 +57,7 @@ def check_animation():
             left, bottom, width, height = viewer.frame_rectangle(action, frame, sheet_height)
             assert 0 <= left < left + width <= sheet_width
             assert 0 <= bottom < bottom + height <= sheet_height
-    sonic = next(i for i, action in enumerate(viewer.ANIMATIONS) if action[0] == "소닉 회전 점프")
-    assert viewer.frame_rectangle(sonic, 0, 525) == (1, 326, 29, 30)
+    assert viewer.frame_rectangle(0, 0, 1024) == (61, 848, 135, 166)
 
     # Every action keeps one scale, its aspect ratio, center and half-viewport bounds.
     for action, (_, filename, frames) in enumerate(viewer.ANIMATIONS):
@@ -99,6 +98,7 @@ def check_renderer():
         pico2d.SDL_SetWindowResizable(pico2d.window, pico2d.SDL_TRUE)
         assert pico2d.SDL_GetWindowFlags(pico2d.window) & pico2d.SDL_WINDOW_RESIZABLE
         sheets = viewer.load_sprites()
+        assert set(sheets) == {"gpt_robot_sheet.png"}
         for filename, sheet in sheets.items():
             assert (sheet.w, sheet.h) == png_size(filename)
         for width, height in ((800, 600), (1200, 400), (400, 1000)):

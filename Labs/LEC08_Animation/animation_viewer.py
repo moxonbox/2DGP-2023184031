@@ -6,16 +6,9 @@ from time import perf_counter
 
 from pico2d import pico2d
 
-FRAME_SIZE = 128
 FRAMES_PER_SECOND = 10
 REPETITIONS = 5
 PAUSE_SECONDS = 1.0
-
-
-def grid_frames(row, count):
-    """Return top-left rectangles for a row of the regular samurai sheet."""
-    return tuple((column * FRAME_SIZE, row * FRAME_SIZE, FRAME_SIZE, FRAME_SIZE)
-                 for column in range(count))
 
 
 # (name, image filename, ((left, top, width, height), ...))
@@ -43,27 +36,6 @@ ANIMATIONS = (
     )),
     ("GPT 로봇 승리", "gpt_robot_sheet.png", (
         (61, 864, 117, 152), (221, 857, 142, 159), (390, 857, 154, 159),
-    )),
-    ("걷기", "SamuraiSheet.png", grid_frames(1, 8)),
-    ("뛰기", "SamuraiSheet.png", grid_frames(2, 8)),
-    ("점프", "SamuraiSheet.png", grid_frames(3, 12)),
-    ("공격", "SamuraiSheet.png", grid_frames(4, 6)),
-    ("소닉 회전 점프", "sonic-sprite.png", (
-        (1, 169, 29, 30), (35, 167, 29, 31), (67, 169, 30, 29),
-        (98, 169, 31, 29), (131, 168, 29, 30), (162, 168, 29, 31),
-        (193, 170, 30, 29), (230, 170, 31, 29), (268, 170, 30, 30),
-    )),
-    ("소닉 구르기", "sonic-sprite.png", (
-        (1, 206, 30, 27), (36, 206, 29, 27), (70, 206, 29, 27),
-        (105, 206, 29, 27), (139, 206, 29, 27), (174, 206, 29, 27),
-    )),
-    ("소닉 공중 회전", "sonic-sprite.png", (
-        (1, 379, 27, 38), (31, 379, 31, 36), (64, 379, 31, 36),
-        (99, 377, 33, 38), (136, 379, 32, 36), (176, 379, 33, 36),
-        (217, 379, 33, 36), (254, 378, 33, 36),
-    )),
-    ("소닉 승리", "sonic-sprite.png", (
-        (96, 427, 23, 39), (125, 427, 23, 39),
     )),
 )
 
