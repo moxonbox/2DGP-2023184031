@@ -18,6 +18,13 @@ def load_sprite():
     return pico2d.load_image(str(Path(__file__).with_name("SamuraiSheet.png")))
 
 
+def frame_rectangle(action, frame, sheet_height):
+    """Convert a top-down sheet row to pico2d's bottom-left coordinates."""
+    row = ANIMATIONS[action][1]
+    return (frame * FRAME_SIZE, sheet_height - (row + 1) * FRAME_SIZE,
+            FRAME_SIZE, FRAME_SIZE)
+
+
 def main():
     pico2d.open_canvas(800, 600)
     pico2d.close_canvas()
