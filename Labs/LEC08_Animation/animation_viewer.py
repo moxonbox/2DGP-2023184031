@@ -7,6 +7,7 @@ from pico2d import pico2d
 FRAME_SIZE = 128
 FRAMES_PER_SECOND = 10
 REPETITIONS = 5
+PAUSE_SECONDS = 1.0
 # (name, row from the top, frame count)
 ANIMATIONS = (
     ("Walk", 1, 8),
@@ -31,6 +32,7 @@ def animation_at(elapsed):
     """Return the action, frame and pause state at an elapsed time."""
     frame_count = ANIMATIONS[0][2]
     play_seconds = frame_count * REPETITIONS / FRAMES_PER_SECOND
+    elapsed %= play_seconds + PAUSE_SECONDS
     frame = min(int(elapsed * FRAMES_PER_SECOND), frame_count * REPETITIONS - 1)
     return 0, frame % frame_count, elapsed >= play_seconds
 
