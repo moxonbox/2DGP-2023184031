@@ -30,11 +30,17 @@ def frame_rectangle(action, frame, sheet_height):
 
 def animation_at(elapsed):
     """Return the action, frame and pause state at an elapsed time."""
-    frame_count = ANIMATIONS[0][2]
-    play_seconds = frame_count * REPETITIONS / FRAMES_PER_SECOND
-    elapsed %= play_seconds + PAUSE_SECONDS
-    frame = min(int(elapsed * FRAMES_PER_SECOND), frame_count * REPETITIONS - 1)
-    return 0, frame % frame_count, elapsed >= play_seconds
+    durations = tuple(count * REPETITIONS / FRAMES_PER_SECOND + PAUSE_SECONDS
+                      for _, _, count in ANIMATIONS)
+    elapsed %= sum(durations)
+    for action, duration in enumerate(durations):
+        if elapsed < duration:
+            frame_count = ANIMATIONS[action][2]
+            play_seconds = duration - PAUSE_SECONDS
+            frame = min(int(elapsed * FRAMES_PER_SECOND),
+                        frame_count * REPETITIONS - 1)
+            return action, frame % frame_count, elapsed >= play_seconds
+        elapsed -= duration
 
 
 def draw_frame(sheet, action, frame, width, height):
