@@ -19,6 +19,17 @@ def png_size(filename):
 
 
 def check_animation():
+    generated = viewer.ANIMATIONS[:6]
+    assert [name for name, _, _ in generated] == [
+        "GPT 로봇 대기", "GPT 로봇 걷기", "GPT 로봇 뛰기",
+        "GPT 로봇 점프", "GPT 로봇 공격", "GPT 로봇 승리",
+    ]
+    assert [len(frames) for _, _, frames in generated] == [4, 6, 5, 5, 6, 3]
+    assert all(filename == "gpt_robot_sheet.png" for _, filename, _ in generated)
+    assert png_size("gpt_robot_sheet.png") == (1536, 1024)
+    assert len({rect[2:] for _, _, frames in generated for rect in frames}) > 1
+    assert viewer.animation_at(20.5) == (6, 0, False)
+    assert viewer.animation_at(58) == (0, 0, False)
     # Check every frame of five repetitions, then both edges of each pause.
     start = 0
     assert len({len(frames) for _, _, frames in viewer.ANIMATIONS}) > 1
