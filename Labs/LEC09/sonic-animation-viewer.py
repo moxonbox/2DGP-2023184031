@@ -1,9 +1,12 @@
 """Play the irregular Classic Sonic sprite sheet with pico2d."""
 
 from pathlib import Path
+from math import isfinite
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
+DEFAULT_FPS = 12
+RENDER_FPS = 60
 IMAGE_PATH = Path(__file__).resolve().with_name('sonic-sprite.png')
 
 # Frames: left, top, width, height, anchor_x, anchor_y (top-left origin).
@@ -117,6 +120,37 @@ ACTIONS = [
 ]
 
 
+def validate_actions(actions, sheet_width, sheet_height):
+    if not actions:
+        raise ValueError('동작 목록이 비어 있습니다.')
+    ids = set()
+    for action in actions:
+        action_id = action.get('id')
+        if not isinstance(action_id, str) or not action_id or action_id in ids:
+            raise ValueError(f'잘못되거나 중복된 동작 ID: {action_id}')
+        ids.add(action_id)
+        fps = action.get('fps', DEFAULT_FPS)
+        if (not isinstance(fps, (int, float)) or isinstance(fps, bool)
+                or not isfinite(fps) or not 0 < fps <= RENDER_FPS):
+            raise ValueError(f'{action_id}: FPS는 0 초과 {RENDER_FPS} 이하이어야 합니다.')
+        if not action.get('frames'):
+            raise ValueError(f'{action_id}: 프레임 목록이 비어 있습니다.')
+        for number, frame in enumerate(action['frames'], 1):
+            error = f'{action_id} 프레임 {number}: 잘못된 좌표 또는 정렬점'
+            if len(frame) != 6:
+                raise ValueError(error)
+            left, top, width, height, ax, ay = frame
+            if not all(type(v) is int for v in frame[:4]):
+                raise ValueError(error)
+            if (left < 0 or top < 0 or width <= 0 or height <= 0
+                    or left + width > sheet_width or top + height > sheet_height):
+                raise ValueError(error)
+            if (not all(isinstance(v, (int, float)) and not isinstance(v, bool)
+                        and isfinite(v) for v in (ax, ay))
+                    or not 0 <= ax <= width or not 0 <= ay <= height):
+                raise ValueError(error)
+
+
 def action_layout(action):
     frames = action['frames']
     xmin = min(-f[4] for f in frames)
@@ -145,6 +179,7 @@ def main():
 
     pico2d.open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     image = pico2d.load_image(str(IMAGE_PATH))
+    validate_actions(ACTIONS, image.w, image.h)
     print(f'Sprite sheet: {image.w} x {image.h}')
     draw_frame(pico2d, image, ACTIONS[0]['frames'][0], action_layout(ACTIONS[0]))
     pico2d.close_canvas()
