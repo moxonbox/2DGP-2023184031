@@ -6,6 +6,19 @@ CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
 IMAGE_PATH = Path(__file__).resolve().with_name('sonic-sprite.png')
 
+# Frames: left, top, width, height, anchor_x, anchor_y (top-left origin).
+ACTIONS = [
+    {'id': 'action_01', 'fps': 6, 'frames': [
+        (1, 39, 29, 39, 14.5, 39),
+        (31, 40, 26, 38, 13, 38),
+        (58, 39, 29, 39, 14.5, 39),
+        (87, 40, 29, 38, 14.5, 38),
+        (118, 40, 30, 38, 15, 38),
+        (150, 40, 30, 38, 15, 38),
+        (182, 40, 28, 38, 14, 38),
+    ]},
+]
+
 
 def main():
     import pico2d
