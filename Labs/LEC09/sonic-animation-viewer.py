@@ -30,7 +30,7 @@ ACTIONS = [
         (270, 45, 24, 32, 12, 32),
         (302, 51, 29, 26, 14.5, 26),
     ]},
-    {'id': 'action_02', 'move': True, 'frames': [
+    {'id': 'action_02', 'move': True, 'speed': 120, 'frames': [
         (8, 80, 26, 37, 13, 37),
         (37, 80, 27, 37, 13.5, 37),
         (65, 80, 31, 38, 15.5, 38),
@@ -44,7 +44,7 @@ ACTIONS = [
         (334, 80, 32, 36, 16, 36),
         (370, 79, 29, 38, 14.5, 38),
     ]},
-    {'id': 'action_03', 'fps': 16, 'move': True, 'frames': [
+    {'id': 'action_03', 'fps': 16, 'move': True, 'speed': 240, 'frames': [
         (1, 124, 33, 40, 16.5, 40),
         (39, 124, 35, 39, 17.5, 39),
         (89, 125, 35, 38, 17.5, 38),
@@ -71,7 +71,7 @@ ACTIONS = [
         (139, 206, 29, 27, 14.5, 13.5),
         (174, 206, 29, 27, 14.5, 13.5),
     ]},
-    {'id': 'action_06', 'move': True, 'frames': [
+    {'id': 'action_06', 'move': True, 'speed': 180, 'frames': [
         (1, 239, 29, 35, 14.5, 35),
         (36, 239, 30, 35, 15, 35),
         (74, 239, 31, 35, 15.5, 35),
@@ -79,7 +79,7 @@ ACTIONS = [
         (149, 239, 30, 35, 15, 35),
         (186, 238, 31, 36, 15.5, 36),
     ]},
-    {'id': 'action_07', 'fps': 16, 'move': True, 'frames': [
+    {'id': 'action_07', 'fps': 16, 'move': True, 'speed': 280, 'frames': [
         (1, 283, 29, 35, 14.5, 35),
         (36, 283, 30, 35, 15, 35),
         (72, 286, 39, 31, 19.5, 31),
@@ -131,6 +131,10 @@ def validate_actions(actions, sheet_width, sheet_height):
         ids.add(action_id)
         if type(action.get('move', False)) is not bool:
             raise ValueError(f'{action_id}: move는 bool이어야 합니다.')
+        speed = action.get('speed', MOVEMENT_SPEED)
+        if (not isinstance(speed, (int, float)) or isinstance(speed, bool)
+                or not isfinite(speed) or speed <= 0):
+            raise ValueError(f'{action_id}: speed는 유한한 양수이어야 합니다.')
         fps = action.get('fps', DEFAULT_FPS)
         if (not isinstance(fps, (int, float)) or isinstance(fps, bool)
                 or not isfinite(fps) or not 0 < fps <= RENDER_FPS):
@@ -139,7 +143,7 @@ def validate_actions(actions, sheet_width, sheet_height):
             raise ValueError(f'{action_id}: 프레임 목록이 비어 있습니다.')
         for number, frame in enumerate(action['frames'], 1):
             error = f'{action_id} 프레임 {number}: 잘못된 좌표 또는 정렬점'
-            if len(frame) != 6:
+            if not isinstance(frame, (tuple, list)) or len(frame) != 6:
                 raise ValueError(error)
             left, top, width, height, ax, ay = frame
             if not all(type(v) is int for v in frame[:4]):
@@ -196,7 +200,8 @@ class Player:
             return
         if self.moving:
             limit = self.motion_limits[self.action_index]
-            self.horizontal_offset = min(limit, self.horizontal_offset + MOVEMENT_SPEED * dt)
+            speed = self.action.get('speed', MOVEMENT_SPEED)
+            self.horizontal_offset = min(limit, self.horizontal_offset + speed * dt)
             if self.horizontal_offset >= limit:
                 self.moving = False
                 self.waiting = True
@@ -255,6 +260,14 @@ def draw_frame(pico2d, image, frame, layout, horizontal_offset=0.0):
     pico2d.update_canvas()
 
 
+def playback_title(player):
+    phase = '대기' if player.waiting else '이동' if player.moving else '재생'
+    if player.paused:
+        phase += ' (일시정지)'
+    loop = min(player.completed_loops + 1, ACTION_LOOPS)
+    return f"Sonic | {player.action['id']} | {loop}/{ACTION_LOOPS} | {phase}"
+
+
 def run_viewer(pico2d, image_path=IMAGE_PATH):
     try:
         pico2d.open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
@@ -281,6 +294,8 @@ def run_viewer(pico2d, image_path=IMAGE_PATH):
             player.paused = paused
             player.update(dt)
             previous = now
+            # get_events() overwrites the SDL caption with FPS; set our title after it.
+            pico2d.SDL_SetWindowTitle(pico2d.window, playback_title(player).encode('utf-8'))
             if not player.paused:
                 draw_frame(pico2d, image, player.frame, layouts[player.action_index],
                            player.horizontal_offset)
