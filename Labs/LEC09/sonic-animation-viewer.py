@@ -162,6 +162,7 @@ class Player:
         self.frame_index = 0
         self.elapsed = 0.0
         self.waiting = False
+        self.paused = False
 
     @property
     def action(self):
@@ -174,6 +175,8 @@ class Player:
     def update(self, dt):
         if not isfinite(dt) or dt < 0:
             raise ValueError('경과 시간은 유한한 0 이상 값이어야 합니다.')
+        if self.paused:
+            return
         self.elapsed += dt
         if self.waiting:
             if self.elapsed + 1e-12 >= WAIT_SECONDS:
@@ -229,12 +232,21 @@ def main():
     layouts = [action_layout(action) for action in ACTIONS]
     previous = time.perf_counter()
     while True:
+        loop_start = time.perf_counter()
+        for event in pico2d.get_events():
+            if (event.type == pico2d.SDL_QUIT
+                    or event.type == pico2d.SDL_KEYDOWN and event.key == pico2d.SDLK_ESCAPE):
+                pico2d.close_canvas()
+                return
         now = time.perf_counter()
-        player.update(now - previous)
+        paused = bool(pico2d.SDL_GetWindowFlags(pico2d.window) & pico2d.SDL_WINDOW_MINIMIZED)
+        dt = 0.0 if paused != player.paused else now - previous
+        player.paused = paused
+        player.update(dt)
         previous = now
-        draw_frame(pico2d, image, player.frame, layouts[player.action_index])
-        time.sleep(1 / RENDER_FPS)
-    pico2d.close_canvas()
+        if not player.paused:
+            draw_frame(pico2d, image, player.frame, layouts[player.action_index])
+        time.sleep(max(0.0, 1 / RENDER_FPS - (time.perf_counter() - loop_start)))
 
 
 if __name__ == '__main__':
