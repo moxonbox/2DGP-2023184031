@@ -224,8 +224,8 @@ def draw_frame(pico2d, image, frame, layout):
 
 
 def run_viewer(pico2d, image_path=IMAGE_PATH):
-    pico2d.open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     try:
+        pico2d.open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
         if not pico2d.window or not pico2d.renderer:
             raise RuntimeError('캔버스를 생성하지 못했습니다.')
         try:
