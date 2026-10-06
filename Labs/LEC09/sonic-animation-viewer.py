@@ -257,7 +257,8 @@ def run_viewer(pico2d, image_path=IMAGE_PATH):
 
 def main():
     try:
-        import pico2d
+        # The package re-exports functions, but window/renderer live in this module.
+        import pico2d.pico2d as pico2d
     except ImportError:
         print('pico2d가 필요합니다. 현재 Python 환경에 pico2d를 설치하세요.', file=sys.stderr)
         return 1
