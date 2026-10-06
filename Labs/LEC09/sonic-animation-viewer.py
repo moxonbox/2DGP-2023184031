@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from math import isfinite
+import time
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
@@ -169,9 +170,12 @@ class Player:
         return self.action['frames'][self.frame_index]
 
     def update(self, dt):
+        if not isfinite(dt) or dt < 0:
+            raise ValueError('경과 시간은 유한한 0 이상 값이어야 합니다.')
         self.elapsed += dt
-        if self.elapsed + 1e-12 >= 0.1:
-            self.elapsed -= 0.1
+        interval = 1 / self.action.get('fps', DEFAULT_FPS)
+        if self.elapsed + 1e-12 >= interval:
+            self.elapsed = max(0.0, self.elapsed - interval)
             self.frame_index = min(self.frame_index + 1, len(self.action['frames']) - 1)
 
 
@@ -205,7 +209,16 @@ def main():
     image = pico2d.load_image(str(IMAGE_PATH))
     validate_actions(ACTIONS, image.w, image.h)
     print(f'Sprite sheet: {image.w} x {image.h}')
-    draw_frame(pico2d, image, ACTIONS[0]['frames'][0], action_layout(ACTIONS[0]))
+    player = Player(ACTIONS)
+    layouts = [action_layout(action) for action in ACTIONS]
+    previous = time.perf_counter()
+    while player.frame_index < len(player.action['frames']) - 1:
+        now = time.perf_counter()
+        player.update(now - previous)
+        previous = now
+        draw_frame(pico2d, image, player.frame, layouts[player.action_index])
+        time.sleep(1 / RENDER_FPS)
+    draw_frame(pico2d, image, player.frame, layouts[player.action_index])
     pico2d.close_canvas()
 
 
