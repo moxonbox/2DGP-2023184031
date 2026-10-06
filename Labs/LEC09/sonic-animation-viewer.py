@@ -8,6 +8,7 @@ CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
 DEFAULT_FPS = 12
 RENDER_FPS = 60
+WAIT_SECONDS = 1.0
 IMAGE_PATH = Path(__file__).resolve().with_name('sonic-sprite.png')
 
 # Frames: left, top, width, height, anchor_x, anchor_y (top-left origin).
@@ -160,6 +161,7 @@ class Player:
         self.action_index = 0
         self.frame_index = 0
         self.elapsed = 0.0
+        self.waiting = False
 
     @property
     def action(self):
@@ -173,14 +175,23 @@ class Player:
         if not isfinite(dt) or dt < 0:
             raise ValueError('경과 시간은 유한한 0 이상 값이어야 합니다.')
         self.elapsed += dt
+        if self.waiting:
+            if self.elapsed + 1e-12 >= WAIT_SECONDS:
+                self.action_index = min(self.action_index + 1, len(self.actions) - 1)
+                self.frame_index = 0
+                self.elapsed = 0.0
+                self.waiting = False
+            return
         interval = 1 / self.action.get('fps', DEFAULT_FPS)
         if self.elapsed + 1e-12 >= interval:
             self.elapsed = max(0.0, self.elapsed - interval)
             if self.frame_index < len(self.action['frames']) - 1:
                 self.frame_index += 1
+                # The final frame gets a complete interval before the extra wait.
+                if self.frame_index == len(self.action['frames']) - 1:
+                    self.elapsed = 0.0
             else:
-                self.action_index = min(self.action_index + 1, len(self.actions) - 1)
-                self.frame_index = 0
+                self.waiting = True
                 self.elapsed = 0.0
 
 
