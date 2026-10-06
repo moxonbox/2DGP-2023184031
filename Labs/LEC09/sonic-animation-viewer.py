@@ -228,6 +228,7 @@ def run_viewer(pico2d, image_path=IMAGE_PATH):
         pico2d.open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
         if not pico2d.window or not pico2d.renderer:
             raise RuntimeError('캔버스를 생성하지 못했습니다.')
+        pico2d.hide_lattice()
         try:
             image = pico2d.load_image(str(image_path))
         except OSError as error:

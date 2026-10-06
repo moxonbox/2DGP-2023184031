@@ -20,7 +20,7 @@ def fake_pico(events=()):
     image = SimpleNamespace(w=399, h=525, clip_draw=Mock())
     return SimpleNamespace(
         open_canvas=Mock(), close_canvas=Mock(), window=object(), renderer=object(),
-        load_image=Mock(return_value=image), clear_canvas=Mock(), update_canvas=Mock(),
+        load_image=Mock(return_value=image), clear_canvas=Mock(), update_canvas=Mock(), hide_lattice=Mock(),
         get_events=Mock(return_value=list(events)), SDL_GetWindowFlags=Mock(return_value=0),
         SDL_WINDOW_MINIMIZED=4, SDL_QUIT=1, SDL_KEYDOWN=2, SDLK_ESCAPE=27,
     )
