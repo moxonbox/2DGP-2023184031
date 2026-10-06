@@ -9,6 +9,7 @@ CANVAS_HEIGHT = 600
 DEFAULT_FPS = 12
 RENDER_FPS = 60
 WAIT_SECONDS = 1.0
+STALL_SECONDS = 0.5
 IMAGE_PATH = Path(__file__).resolve().with_name('sonic-sprite.png')
 
 # Frames: left, top, width, height, anchor_x, anchor_y (top-left origin).
@@ -175,7 +176,7 @@ class Player:
     def update(self, dt):
         if not isfinite(dt) or dt < 0:
             raise ValueError('경과 시간은 유한한 0 이상 값이어야 합니다.')
-        if self.paused:
+        if self.paused or dt > STALL_SECONDS:
             return
         self.elapsed += dt
         if self.waiting:
