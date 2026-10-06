@@ -3,6 +3,7 @@
 from pathlib import Path
 from math import isfinite
 import time
+import sys
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
@@ -222,33 +223,51 @@ def draw_frame(pico2d, image, frame, layout):
     pico2d.update_canvas()
 
 
-def main():
-    import pico2d
-
+def run_viewer(pico2d, image_path=IMAGE_PATH):
     pico2d.open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
-    image = pico2d.load_image(str(IMAGE_PATH))
-    validate_actions(ACTIONS, image.w, image.h)
-    print(f'Sprite sheet: {image.w} x {image.h}')
-    player = Player(ACTIONS)
-    layouts = [action_layout(action) for action in ACTIONS]
-    previous = time.perf_counter()
-    while True:
-        loop_start = time.perf_counter()
-        for event in pico2d.get_events():
-            if (event.type == pico2d.SDL_QUIT
-                    or event.type == pico2d.SDL_KEYDOWN and event.key == pico2d.SDLK_ESCAPE):
-                pico2d.close_canvas()
-                return
-        now = time.perf_counter()
-        paused = bool(pico2d.SDL_GetWindowFlags(pico2d.window) & pico2d.SDL_WINDOW_MINIMIZED)
-        dt = 0.0 if paused != player.paused else now - previous
-        player.paused = paused
-        player.update(dt)
-        previous = now
-        if not player.paused:
-            draw_frame(pico2d, image, player.frame, layouts[player.action_index])
-        time.sleep(max(0.0, 1 / RENDER_FPS - (time.perf_counter() - loop_start)))
+    try:
+        if not pico2d.window or not pico2d.renderer:
+            raise RuntimeError('캔버스를 생성하지 못했습니다.')
+        try:
+            image = pico2d.load_image(str(image_path))
+        except OSError as error:
+            raise OSError(f'스프라이트 이미지를 읽을 수 없습니다: {image_path}') from error
+        validate_actions(ACTIONS, image.w, image.h)
+        player = Player(ACTIONS)
+        layouts = [action_layout(action) for action in ACTIONS]
+        previous = time.perf_counter()
+        while True:
+            loop_start = time.perf_counter()
+            for event in pico2d.get_events():
+                if (event.type == pico2d.SDL_QUIT
+                        or event.type == pico2d.SDL_KEYDOWN and event.key == pico2d.SDLK_ESCAPE):
+                    return
+            now = time.perf_counter()
+            paused = bool(pico2d.SDL_GetWindowFlags(pico2d.window) & pico2d.SDL_WINDOW_MINIMIZED)
+            dt = 0.0 if paused != player.paused else now - previous
+            player.paused = paused
+            player.update(dt)
+            previous = now
+            if not player.paused:
+                draw_frame(pico2d, image, player.frame, layouts[player.action_index])
+            time.sleep(max(0.0, 1 / RENDER_FPS - (time.perf_counter() - loop_start)))
+    finally:
+        pico2d.close_canvas()
+
+
+def main():
+    try:
+        import pico2d
+    except ImportError:
+        print('pico2d가 필요합니다. 현재 Python 환경에 pico2d를 설치하세요.', file=sys.stderr)
+        return 1
+    try:
+        run_viewer(pico2d)
+    except (OSError, ValueError, RuntimeError) as error:
+        print(error, file=sys.stderr)
+        return 1
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
