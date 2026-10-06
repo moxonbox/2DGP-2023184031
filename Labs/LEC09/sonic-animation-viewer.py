@@ -20,12 +20,22 @@ ACTIONS = [
 ]
 
 
+def draw_frame(pico2d, image, frame):
+    left, top, width, height, _, _ = frame
+    bottom = image.h - top - height
+    pico2d.clear_canvas()
+    image.clip_draw(left, bottom, width, height,
+                    CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2)
+    pico2d.update_canvas()
+
+
 def main():
     import pico2d
 
     pico2d.open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     image = pico2d.load_image(str(IMAGE_PATH))
     print(f'Sprite sheet: {image.w} x {image.h}')
+    draw_frame(pico2d, image, ACTIONS[0]['frames'][0])
     pico2d.close_canvas()
 
 
