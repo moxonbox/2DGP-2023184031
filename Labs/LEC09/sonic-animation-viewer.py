@@ -176,7 +176,12 @@ class Player:
         interval = 1 / self.action.get('fps', DEFAULT_FPS)
         if self.elapsed + 1e-12 >= interval:
             self.elapsed = max(0.0, self.elapsed - interval)
-            self.frame_index = min(self.frame_index + 1, len(self.action['frames']) - 1)
+            if self.frame_index < len(self.action['frames']) - 1:
+                self.frame_index += 1
+            else:
+                self.action_index = min(self.action_index + 1, len(self.actions) - 1)
+                self.frame_index = 0
+                self.elapsed = 0.0
 
 
 def action_layout(action):
@@ -212,7 +217,8 @@ def main():
     player = Player(ACTIONS)
     layouts = [action_layout(action) for action in ACTIONS]
     previous = time.perf_counter()
-    while player.frame_index < len(player.action['frames']) - 1:
+    while (player.action_index < len(ACTIONS) - 1
+           or player.frame_index < len(player.action['frames']) - 1):
         now = time.perf_counter()
         player.update(now - previous)
         previous = now
