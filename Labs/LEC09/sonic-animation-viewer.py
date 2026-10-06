@@ -151,6 +151,30 @@ def validate_actions(actions, sheet_width, sheet_height):
                 raise ValueError(error)
 
 
+class Player:
+    """Small playback state; update takes elapsed seconds for headless checks."""
+
+    def __init__(self, actions):
+        self.actions = actions
+        self.action_index = 0
+        self.frame_index = 0
+        self.elapsed = 0.0
+
+    @property
+    def action(self):
+        return self.actions[self.action_index]
+
+    @property
+    def frame(self):
+        return self.action['frames'][self.frame_index]
+
+    def update(self, dt):
+        self.elapsed += dt
+        if self.elapsed + 1e-12 >= 0.1:
+            self.elapsed -= 0.1
+            self.frame_index = min(self.frame_index + 1, len(self.action['frames']) - 1)
+
+
 def action_layout(action):
     frames = action['frames']
     xmin = min(-f[4] for f in frames)
