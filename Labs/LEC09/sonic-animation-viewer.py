@@ -177,7 +177,7 @@ class Player:
         self.elapsed += dt
         if self.waiting:
             if self.elapsed + 1e-12 >= WAIT_SECONDS:
-                self.action_index = min(self.action_index + 1, len(self.actions) - 1)
+                self.action_index = (self.action_index + 1) % len(self.actions)
                 self.frame_index = 0
                 self.elapsed = 0.0
                 self.waiting = False
@@ -228,14 +228,12 @@ def main():
     player = Player(ACTIONS)
     layouts = [action_layout(action) for action in ACTIONS]
     previous = time.perf_counter()
-    while (player.action_index < len(ACTIONS) - 1
-           or player.frame_index < len(player.action['frames']) - 1):
+    while True:
         now = time.perf_counter()
         player.update(now - previous)
         previous = now
         draw_frame(pico2d, image, player.frame, layouts[player.action_index])
         time.sleep(1 / RENDER_FPS)
-    draw_frame(pico2d, image, player.frame, layouts[player.action_index])
     pico2d.close_canvas()
 
 
