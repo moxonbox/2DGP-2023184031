@@ -11,6 +11,8 @@ DEFAULT_FPS = 12
 RENDER_FPS = 60
 WAIT_SECONDS = 1.0
 STALL_SECONDS = 0.5
+ACTION_LOOPS = 3
+MOVEMENT_SPEED = 200.0  # Pixels per active second; move only left to right.
 IMAGE_PATH = Path(__file__).resolve().with_name('sonic-sprite.png')
 
 # Frames: left, top, width, height, anchor_x, anchor_y (top-left origin).
@@ -23,18 +25,12 @@ ACTIONS = [
         (118, 40, 30, 38, 15, 38),
         (150, 40, 30, 38, 15, 38),
         (182, 40, 28, 38, 14, 38),
-    ]},
-    {'id': 'action_02', 'fps': 6, 'frames': [
         (210, 39, 30, 38, 15, 38),
         (240, 39, 29, 38, 14.5, 38),
-    ]},
-    {'id': 'action_03', 'frames': [
         (270, 45, 24, 32, 12, 32),
-    ]},
-    {'id': 'action_04', 'frames': [
         (302, 51, 29, 26, 14.5, 26),
     ]},
-    {'id': 'action_05', 'frames': [
+    {'id': 'action_02', 'move': True, 'frames': [
         (8, 80, 26, 37, 13, 37),
         (37, 80, 27, 37, 13.5, 37),
         (65, 80, 31, 38, 15.5, 38),
@@ -48,7 +44,7 @@ ACTIONS = [
         (334, 80, 32, 36, 16, 36),
         (370, 79, 29, 38, 14.5, 38),
     ]},
-    {'id': 'action_06', 'fps': 16, 'frames': [
+    {'id': 'action_03', 'fps': 16, 'move': True, 'frames': [
         (1, 124, 33, 40, 16.5, 40),
         (39, 124, 35, 39, 17.5, 39),
         (89, 125, 35, 38, 17.5, 38),
@@ -56,7 +52,7 @@ ACTIONS = [
         (181, 122, 34, 41, 17, 41),
         (228, 122, 33, 40, 16.5, 40),
     ]},
-    {'id': 'action_07', 'fps': 16, 'frames': [
+    {'id': 'action_04', 'fps': 16, 'move': True, 'frames': [
         (1, 169, 29, 30, 14.5, 15),
         (35, 167, 29, 31, 14.5, 15.5),
         (67, 169, 30, 29, 15, 14.5),
@@ -67,7 +63,7 @@ ACTIONS = [
         (230, 170, 31, 29, 15.5, 14.5),
         (268, 170, 30, 30, 15, 15),
     ]},
-    {'id': 'action_08', 'fps': 16, 'frames': [
+    {'id': 'action_05', 'fps': 16, 'move': True, 'frames': [
         (1, 206, 30, 27, 15, 13.5),
         (36, 206, 29, 27, 14.5, 13.5),
         (70, 206, 29, 27, 14.5, 13.5),
@@ -75,7 +71,7 @@ ACTIONS = [
         (139, 206, 29, 27, 14.5, 13.5),
         (174, 206, 29, 27, 14.5, 13.5),
     ]},
-    {'id': 'action_09', 'frames': [
+    {'id': 'action_06', 'move': True, 'frames': [
         (1, 239, 29, 35, 14.5, 35),
         (36, 239, 30, 35, 15, 35),
         (74, 239, 31, 35, 15.5, 35),
@@ -83,7 +79,7 @@ ACTIONS = [
         (149, 239, 30, 35, 15, 35),
         (186, 238, 31, 36, 15.5, 36),
     ]},
-    {'id': 'action_10', 'fps': 16, 'frames': [
+    {'id': 'action_07', 'fps': 16, 'move': True, 'frames': [
         (1, 283, 29, 35, 14.5, 35),
         (36, 283, 30, 35, 15, 35),
         (72, 286, 39, 31, 19.5, 31),
@@ -91,7 +87,7 @@ ACTIONS = [
         (172, 286, 39, 31, 19.5, 31),
         (218, 285, 38, 32, 19, 32),
     ]},
-    {'id': 'action_11', 'fps': 10, 'frames': [
+    {'id': 'action_08', 'fps': 10, 'frames': [
         (1, 326, 24, 45, 12, 22.5),
         (31, 327, 29, 44, 14.5, 22),
         (65, 327, 20, 44, 10, 22),
@@ -99,11 +95,11 @@ ACTIONS = [
         (119, 327, 25, 43, 12.5, 21.5),
         (149, 327, 20, 44, 10, 22),
     ]},
-    {'id': 'action_12', 'fps': 8, 'frames': [
+    {'id': 'action_09', 'fps': 8, 'frames': [
         (184, 341, 40, 28, 20, 14),
         (232, 341, 39, 27, 19.5, 13.5),
     ]},
-    {'id': 'action_13', 'fps': 10, 'frames': [
+    {'id': 'action_10', 'fps': 10, 'frames': [
         (1, 379, 27, 38, 13.5, 38),
         (31, 379, 31, 36, 15.5, 36),
         (64, 379, 31, 36, 15.5, 36),
@@ -113,11 +109,11 @@ ACTIONS = [
         (217, 379, 33, 36, 16.5, 36),
         (254, 378, 33, 36, 16.5, 36),
     ]},
-    {'id': 'action_14', 'fps': 8, 'frames': [
+    {'id': 'action_11', 'fps': 8, 'frames': [
         (6, 429, 34, 40, 17, 20),
         (49, 426, 34, 43, 17, 21.5),
     ]},
-    {'id': 'action_15', 'fps': 6, 'frames': [
+    {'id': 'action_12', 'fps': 6, 'frames': [
         (96, 427, 23, 39, 11.5, 39),
         (125, 427, 23, 39, 11.5, 39),
     ]},
@@ -133,6 +129,8 @@ def validate_actions(actions, sheet_width, sheet_height):
         if not isinstance(action_id, str) or not action_id or action_id in ids:
             raise ValueError(f'잘못되거나 중복된 동작 ID: {action_id}')
         ids.add(action_id)
+        if type(action.get('move', False)) is not bool:
+            raise ValueError(f'{action_id}: move는 bool이어야 합니다.')
         fps = action.get('fps', DEFAULT_FPS)
         if (not isinstance(fps, (int, float)) or isinstance(fps, bool)
                 or not isfinite(fps) or not 0 < fps <= RENDER_FPS):
@@ -161,10 +159,21 @@ class Player:
     def __init__(self, actions):
         self.actions = actions
         self.action_index = 0
+        self.layouts = [action_layout(action) for action in actions]
+        self.motion_limits = [
+            (CANVAS_WIDTH - (action_bounds(action)[1] - action_bounds(action)[0]) * layout[0]) / 2
+            for action, layout in zip(actions, self.layouts)
+        ]
+        self.paused = False
+        self.start_action()
+
+    def start_action(self):
         self.frame_index = 0
         self.elapsed = 0.0
+        self.completed_loops = 0
+        self.moving = False
+        self.horizontal_offset = 0.0
         self.waiting = False
-        self.paused = False
 
     @property
     def action(self):
@@ -183,10 +192,16 @@ class Player:
         if self.waiting:
             if self.elapsed + 1e-12 >= WAIT_SECONDS:
                 self.action_index = (self.action_index + 1) % len(self.actions)
-                self.frame_index = 0
-                self.elapsed = 0.0
-                self.waiting = False
+                self.start_action()
             return
+        if self.moving:
+            limit = self.motion_limits[self.action_index]
+            self.horizontal_offset = min(limit, self.horizontal_offset + MOVEMENT_SPEED * dt)
+            if self.horizontal_offset >= limit:
+                self.moving = False
+                self.waiting = True
+                self.elapsed = 0.0
+                return
         interval = 1 / self.action.get('fps', DEFAULT_FPS)
         if self.elapsed + 1e-12 >= interval:
             self.elapsed = max(0.0, self.elapsed - interval)
@@ -196,28 +211,45 @@ class Player:
                 if self.frame_index == len(self.action['frames']) - 1:
                     self.elapsed = 0.0
             else:
-                self.waiting = True
-                self.elapsed = 0.0
+                if self.moving:
+                    self.frame_index = 0
+                else:
+                    self.completed_loops += 1
+                    if self.completed_loops < ACTION_LOOPS:
+                        self.frame_index = 0
+                    else:
+                        self.elapsed = 0.0
+                        if self.action.get('move', False):
+                            self.moving = True
+                            self.horizontal_offset = -self.motion_limits[self.action_index]
+                            self.frame_index = 0
+                        else:
+                            self.waiting = True
 
 
-def action_layout(action):
+def action_bounds(action):
     frames = action['frames']
     xmin = min(-f[4] for f in frames)
     xmax = max(f[2] - f[4] for f in frames)
     ymin = min(f[5] - f[3] for f in frames)
     ymax = max(f[5] for f in frames)
+    return xmin, xmax, ymin, ymax
+
+
+def action_layout(action):
+    xmin, xmax, ymin, ymax = action_bounds(action)
     scale = min(CANVAS_WIDTH, CANVAS_HEIGHT) / (3 * max(xmax - xmin, ymax - ymin))
     return (scale, CANVAS_WIDTH / 2 - (xmin + xmax) / 2 * scale,
             CANVAS_HEIGHT / 2 - (ymin + ymax) / 2 * scale)
 
 
-def draw_frame(pico2d, image, frame, layout):
+def draw_frame(pico2d, image, frame, layout, horizontal_offset=0.0):
     left, top, width, height, anchor_x, anchor_y = frame
     scale, origin_x, origin_y = layout
     bottom = image.h - top - height
     pico2d.clear_canvas()
     image.clip_draw(left, bottom, width, height,
-                    origin_x + (width / 2 - anchor_x) * scale,
+                    origin_x + (width / 2 - anchor_x) * scale + horizontal_offset,
                     origin_y + (anchor_y - height / 2) * scale,
                     width * scale, height * scale)
     pico2d.update_canvas()
@@ -235,7 +267,7 @@ def run_viewer(pico2d, image_path=IMAGE_PATH):
             raise OSError(f'스프라이트 이미지를 읽을 수 없습니다: {image_path}') from error
         validate_actions(ACTIONS, image.w, image.h)
         player = Player(ACTIONS)
-        layouts = [action_layout(action) for action in ACTIONS]
+        layouts = player.layouts
         previous = time.perf_counter()
         while True:
             loop_start = time.perf_counter()
@@ -250,7 +282,8 @@ def run_viewer(pico2d, image_path=IMAGE_PATH):
             player.update(dt)
             previous = now
             if not player.paused:
-                draw_frame(pico2d, image, player.frame, layouts[player.action_index])
+                draw_frame(pico2d, image, player.frame, layouts[player.action_index],
+                           player.horizontal_offset)
             time.sleep(max(0.0, 1 / RENDER_FPS - (time.perf_counter() - loop_start)))
     finally:
         pico2d.close_canvas()
